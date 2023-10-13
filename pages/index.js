@@ -1,3 +1,5 @@
-export default function IndexPage() {
+const IndexPage = () => {
   return <div>Home</div>;
-}
+};
+
+export default IndexPage;
