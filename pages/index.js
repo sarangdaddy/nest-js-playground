@@ -1,13 +1,35 @@
 import Seo from "@/components/Seo";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function Home({ results }) {
+  const router = useRouter();
+
+  const handleRoute = (id, title) => {
+    router.push(
+      {
+        pathname: `/movies/${id}`,
+        query: {
+          title,
+        },
+      },
+      `/movies/${id}`
+    );
+  };
+
   return (
     <div className="container">
       <Seo title="Home" />
       {results.map((movie) => (
-        <div className="movie" key={movie.id}>
+        <div
+          onClick={() => handleRoute(movie.id, movie.original_title)}
+          className="movie"
+          key={movie.id}
+        >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
-          <h4>{movie.original_title}</h4>
+          <Link href={`/movies/${movie.id}`}>
+            <h4>{movie.original_title}</h4>
+          </Link>
         </div>
       ))}
       <style jsx>{`
@@ -16,6 +38,10 @@ export default function Home({ results }) {
           grid-template-columns: 1fr 1fr;
           padding: 20px;
           gap: 20px;
+        }
+
+        .movie {
+          cursor: pointer;
         }
         .movie img {
           max-width: 100%;
@@ -37,7 +63,7 @@ export default function Home({ results }) {
 
 export async function getServerSideProps() {
   const { results } = await (
-    await fetch(`http://localhost:3000//api/movies`)
+    await fetch(`http://localhost:3000/api/movies`)
   ).json();
   return {
     props: {
