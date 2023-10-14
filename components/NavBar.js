@@ -11,7 +11,7 @@ const NavBar = () => {
         </Link>
       </div>
       <div>
-        <Link href="about">
+        <Link href="/about">
           <a className={router.pathname === "/about" ? "active" : ""}>About</a>
         </Link>
       </div>
