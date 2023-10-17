@@ -75,8 +75,8 @@ export default function About() {
 - useRouter 훅은 경로 정보를 제공하며, 현재 라우트를 기반으로 `동적으로 스타일` 또는 `로직을 적용`하는 데 사용할 수 있다.
 
 ```jsx
-import Link from "next/link";
-import { useRouter } from "next/router";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export default function NavBar() {
   const router = useRouter();
@@ -84,13 +84,13 @@ export default function NavBar() {
   return (
     <nav>
       <Link
-        style={{ color: router.pathname === "/" ? "red" : "blue" }}
+        style={{ color: router.pathname === '/' ? 'red' : 'blue' }}
         href="/"
       >
         Home
       </Link>
       <Link
-        style={{ color: router.pathname === "/about" ? "red" : "blue" }}
+        style={{ color: router.pathname === '/about' ? 'red' : 'blue' }}
         href="/about"
       >
         About
@@ -189,7 +189,7 @@ export default function MyApp({ Component, pageProps }) {
 - Layout 컴포넌트를 사용하여 다양한 페이지 간 일관된 구조를 유지할 수 있다.
 
 ```jsx
-import NavBar from "./NavBar";
+import NavBar from './NavBar';
 
 export default function Layout({ children }) {
   return (
