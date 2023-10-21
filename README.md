@@ -1,259 +1,153 @@
-# NextJS
+# Tailwind
 
-- NextJS는 React를 사용할 때 발생할 수 있는 일부 문제점을 해결하도록 설계된 견고한 React 프레임워크다.
-- 파일 기반 라우팅 및 서버 사이드 렌더링(SSR)과 같은 기능을 제공하여 개발자 경험을 향상시키고 애플리케이션 성능을 향상시킨다.
+- Tailwind는 유틸리티 우선의 CSS 프레임워크다.
+- 모바일 우선의 breakpoint 시스템을 사용한다.
 
-## 프레임워크 vs 라이브러리
+## 반응형
 
-- 라이브러리: 개발자가 라이브러리를 호출하고 관리하며, 폴더 구조 및 컴포넌트 배치를 자유롭게 정의한다.
-- 프레임워크: 프레임워크가 개발자의 코드를 호출하며, 코드를 적절한 위치에 배치하고 프레임워크가 정한 규칙을 따르도록 요구한다.
-
-## Next.js의 기본 특징
-
-- pages 파일 이름이 경로(path)가 된다.
-- 컴포넌트는 default로 export 해야한다.
-- 애플리케이션의 페이지들이 사전에 렌더링된다. (SSR)
-
-## CSR vs SSR
-
-- CSR (Client-Side Rendering) (예: CRA)  
-   : 브라우저가 UI 렌더링을 처리하며, JS 코드를 기다리는 동안 빈 페이지를 보여준다.  
-  : 1. root html -> react.js 로딩 -> 초기 화면 출력 및 스크립트 동작
-- SSR (Server-Side Rendering) (예: Next.js)  
-   : HTML 내에서 렌더링되므로 인터넷이 느려도 사용자는 상호작용을 기다리면서 HTML 컨텐츠를 볼 수 있다.  
-  : 1. pre-render 된 정적 페이지 (html) -> react.js 로딩 -> 스크립트 동작
-
-# Next.js의 기능
-
-## Route
-
-### Link
-
-- Next.js는 Link 컴포넌트를 사용하여 클라이언트 측 네비게이션을 제공하며, 페이지 전환 시 리렌더링이 발생하지 않는다.
-
-```jsx
-import Link from "next/link";
-
-export default function NavBar() {
-  return (
-    <nav>
-      <Link style={{ color: "red" }} className="ogo" href="/">
-        Home
-      </Link>
-      <Link href="/about">About</Link>
-    </nav>
-  );
-}
-
-// home
-import NavBar from "@/components/NavBar";
-
-export default function Home() {
-  return (
-    <div>
-      <NavBar />
-      <h1>Home </h1>
-    </div>
-  );
-}
-
-// about
-import NavBar from "@/components/NavBar";
-
-export default function About() {
-  return (
-    <div>
-      <NavBar />
-      <h1>about </h1>
-    </div>
-  );
-}
+```css
+  sm 640px @media (min-width: 640px) { ... }
+  md 768px @media (min-width: 768px) { ... }
+  lg 1024px @media (min-width: 1024px) { ... }
+  xl 1280px @media (min-width: 1280px) { ... }
+  2xl 1536px @media (min-width: 1536px) { ... }
 ```
 
-### useRouter
+[Tailwind Mobile First Documentation](https://tailwindcss.com/docs/responsive-design#mobile-first)
 
-- useRouter 훅은 경로 정보를 제공하며, 현재 라우트를 기반으로 `동적으로 스타일` 또는 `로직을 적용`하는 데 사용할 수 있다.
-
-```jsx
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-
-export default function NavBar() {
-  const router = useRouter();
-
-  return (
-    <nav>
-      <Link
-        style={{ color: router.pathname === '/' ? 'red' : 'blue' }}
-        href="/"
-      >
-        Home
-      </Link>
-      <Link
-        style={{ color: router.pathname === '/about' ? 'red' : 'blue' }}
-        href="/about"
-      >
-        About
-      </Link>
-    </nav>
-  );
-}
-```
-
-### Router Push
-
-- 클라이언트 측 전환을 처리한다.
-- router.push(url, as, options)를 사용하여 프로그래밍 방식으로 라우팅을 수행한다.
-- 외부 URL로 이동할 때는 window.location을 사용한다.
-
-```jsx
-export default function Home({ results }) {
-  const router = useRouter();
-
-  const handleRoute = (id, title) => {
-    router.push(`/movies/${title}/${id}`);
-  };
-
-```
-
-### Dynamic Router
-
-- 대괄호([param])를 추가하여 동적 라우트를 생성한다.
-- 대괄호 안에 세 개의 점([...param])을 추가하여 모든 경로를 포착하는 동적 라우트를 생성한다.
-- useRouter() 혹은 withRouter HOC를 사용하여 라우트 매개변수에 접근할 수 있다.
-
-## next.config.js 파일
-
-- 프로젝트 루트에 위치하며 Node.js 모듈 형식을 가진다.
-- Next.js 서버와 빌드 단계에서 사용되며 브라우저 빌드에는 포함되지 않는다.
-- 커스텀 설정을 위한 파일이다.
-- Redirect, Rewrites 설정을 정의한다.
-
-### Redirect
-
-- 들어오는 요청 경로를 다른 목적지 경로로 리디렉션한다.
-- next.config.js에서 redirects 키를 사용하여 설정한다.
-- 속성: source, destination, permanent.
-
-```jsx
-  async redirects() {
-    return [
-      {
-        source: "/old-contact/:path*",
-        destination: "/new-contact/:path*",
-        permanent: false,
-      },
-    ];
-  },
-```
-
-### Rewrites
-
-- 들어오는 요청 경로를 다른 목적지 경로에 매핑하지만 URL은 변경되지 않는다.
-- URL 프록시 역할을 하여 destination 경로를 마스크한다.
-- 반면 리디렉트는 새 페이지로 리라우트하고 URL 변경 사항을 표시한다.
+- 뷰포트 방향에 따른 조건부 스타일링
 
 ```js
-  async rewrites() {
-    return [
-      {
-        source: "/api/movies",
-        destination: `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`,
-      },
-      {
-        source: "/api/movies/:id",
-        destination: `https://api.themoviedb.org/3/movie/:id?api_key=${API_KEY}`,
-      },
-    ];
-  },
+div class="portrait:hidden"
+div class="landscape:hidden"
 ```
 
-## [사용자 정의 앱 컴포넌트](https://nextjs.org/docs/advanced-features/custom-app)
+[Tailwind Viewport Orientation Documentation](https://tailwindcss.com/docs/hover-focus-and-other-states#viewport-orientation)
 
-- 페이지 초기화를 제어하기 위해 사용자 정의 `_app.js` 파일을 만들 수 있다.
-- 이를 통해 페이지 변경 간 레이아웃을 유지하고, 페이지 탐색 시 상태를 관리하며, 추가 데이터를 페이지에 삽입하고 전역 CSS를 추가할 수 있다.
+## 다크모드
+
+- Tailwind는 dark 모드를 지원하며, 사용자의 운영 체제 설정에 따라 자동으로 적용된다.
 
 ```jsx
-export default function MyApp({ Component, pageProps }) {
-  return (
-    <>
-      <NavBar />
-      <Component {...pageProps}></Component>
-    </>
-  );
+<div className="dark:bg-slate-900"></div>
+```
+
+[dark-mode](https://tailwindcss.com/docs/dark-mode)
+
+### 수동으로 다크 모드 전환
+
+- 운영 체제의 기본 설정에 의존하지 않고 다크 모드를 수동으로 전환하려면 media 대신 class를 사용한다.
+
+```json
+// tailwind.config.js
+module.exports = {
+  darkMode: 'class', // 클래스를 기준으로 다크모드 적용
+  darkMode: "media", // @media(prefers-color-scheme)를 기준으로 다크모드 적용
 }
 ```
 
-## [Layout](https://nextjs.org/docs/basic-features/layouts)
+```json
+// prefers-color-scheme
 
-- Layout 컴포넌트를 사용하여 다양한 페이지 간 일관된 구조를 유지할 수 있다.
+@media (prefers-color-scheme: light) {
+  .themed {
+    background: white;
+    color: black;
+  }
+}
+```
+
+- 이 CSS 미디어 특성은 사용자의 시스템이 라이트 테마나 다크 테마를 사용하는지를 탐지하는데 사용된다.
+
+[Tailwind Manual Dark Mode Toggle](https://tailwindcss.com/docs/dark-mode#toggling-dark-mode-manually)  
+[MDN Documentation for prefers-color-scheme](https://developer.mozilla.org/ko/docs/Web/CSS/@media/prefers-color-scheme)
+
+## 함수를 이용한 클래스 네임 지정
+
+- 클래스 이름을 동적으로 지정하기 위해 함수를 사용할 수 있다.
 
 ```jsx
-import NavBar from './NavBar';
-
-export default function Layout({ children }) {
-  return (
-    <>
-      <NavBar />
-      <div>{children}</div>
-    </>
-  );
+function cls(...classnames: string[]) {
+  return classnames.join(' ');
 }
 ```
 
-## Head
+## Plugins
 
-- next/head는 Next.js에서 제공하는 컴포넌트로, React 컴포넌트 안에서 `<head>` 태그를 조작할 수 있게 해준다.
-- 이 컴포넌트를 사용하면, 각 페이지 또는 컴포넌트에서 메타 태그, 스타일시트, 스크립트 등 `<head>` 요소를 동적으로 수정하거나 추가할 수 있다.
+- Tailwind 플러그인을 사용하면 CSS 대신 JavaScript로 스타일을 추가할 수 있다.
+
+[Tailwind Plugins](https://tailwindcss.com/docs/plugins)
+
+### @tailwindcss/forms
+
+- 이 플러그인은 form 요소의 스타일을 쉽게 재정의할 수 있도록 하는 기본 reset을 제공한다.
+
+```bash
+npm install -D @tailwindcss/forms
+```
+
+- 설치 후, tailwind.config.js에 플러그인을 추가한다.
 
 ```jsx
-import Head from "next/head";
-
-export default function Seo({ title, description }) {
-  return (
-    <Head>
-      <title>{title} | Next Movies</title>
-      <meta name="description" content={description} />
-    </Head>
-  );
-}
-
-import Seo from "@/components/Seo";
-
-export default function Home() {
-  return (
-    <div>
-      <Seo title="Home" />
-      <h1>Home </h1>
-    </div>
-  );
-}
-
-import Seo from "@/components/Seo";
-
-export default function About() {
-  return (
-    <div>
-      <Seo title="About" />
-      <h1>about </h1>
-    </div>
-  );
+// tailwind.config.js
+module.exports = {
+  theme: { ... },
+  plugins: [
+    require('@tailwindcss/forms'),
+    ...
+  ],
 }
 ```
 
-![](https://velog.velcdn.com/images/sarang_daddy/post/1436c9d5-e7b0-4ade-92e2-7e6176f81622/image.gif)
+## 기타 유틸리티
 
-## 주의점 및 추가 정보
+### Divide Width
 
-- 데이터 요청을 할 때 http와 https를 정확하게 사용해야 한다.
-- 경로 패턴에서 \*를 추가하면 모든 경로를 캐치한다.
-- API 키는 환경 변수로 관리하여 노출되지 않게 한다.
-- SSR은 초기 페이지 로딩에서 모든 필요한 데이터를 서버에서 불러와 한 번의 요청으로 완전한 페이지를 로드한다.
-- CSR(Client Side Rendering)은 초기 로드 시에는 페이지 구조만 로드하고, 이후 사용자의 액션에 따라 필요한 데이터만 추가로 요청한다.
+`Divide Width` 유틸리티는 엘리먼트 사이의 border width를 제어할 수 있다.
 
-## 활용 사례
+```css
+divide-x => border-right-width: 1px; border-left-width: 0px;
+divide-x-2 => border-right-width: 2px; border-left-width: 0px;
+divide-y => border-top-width: 0px; border-bottom-width: 1px;
+divide-y-2 => border-top-width: 0px; border-bottom-width: 2px;
+```
 
-- SSR은 SEO에 중요한 페이지나 초기 로딩 속도가 중요한 페이지에서 사용한다.
-- CSR은 사용자의 인터랙션에 따라 다양한 데이터를 보여줘야 하는 페이지에서 사용한다.
-- Redirect와 Rewrite는 URL 관리 전략에 따라 영구적 혹은 임시적으로 경로를 변경해야 할 때 사용한다.
-- Dynamic Router는 동적인 페이지 구조를 가지며, 같은 레이아웃을 가진 여러 페이지를 표현할 때 사용한다.
+[Divide Width Documentation](https://tailwindcss.com/docs/divide-width)
+
+### Top / Right / Bottom / Left
+
+- 이 유틸리티는 positioned된 요소의 배치를 제어한다.
+
+```css
+inset-x-0 => left: 0px; right: 0px;
+inset-x-2 => left: 0.5rem; /* 8px */ right: 0.5rem; /* 8px */
+inset-y-0 => top: 0px; bottom: 0px;
+inset-y-2 => top: 0.5rem; /* 8px */ bottom: 0.5rem; /* 8px */
+```
+
+[TRBL Documentation](https://tailwindcss.com/docs/top-right-bottom-left)
+
+### Aspect Ratio
+
+- 이 유틸리티는 요소의 종횡비를 제어한다.
+
+```css
+aspect-auto => aspect-ratio: auto;
+aspect-square => aspect-ratio: 1 / 1;
+aspect-video => aspect-ratio: 16 / 9;
+iframe class="w-full aspect-[4/3]" src="https://www.youtube.com/...
+```
+
+[Aspect Ratio Documentation](https://tailwindcss.com/docs/aspect-ratio)
+
+### global 스크롤 숨기기
+
+```css
+body {
+  - ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+```
